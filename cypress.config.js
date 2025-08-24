@@ -6,7 +6,7 @@ export default defineConfig({
     setupNodeEvents() {
       // implement node event listeners here
     },
-    baseUrl: "http://localhost:5173",
+    baseUrl: "http://localhost:4173",
     video: true,                     // activa la grabación de video
     videosFolder: 'cypress/videos', // carpeta donde se guardan
     videoCompression: 32,           // compresión (0 = sin comprimir)
