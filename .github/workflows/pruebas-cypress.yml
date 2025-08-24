@@ -1,34 +1,41 @@
 
-#Nombre del workflow
 name: Pruebas E2E con Cypress
+
 on:
-    push:
-        branches: [main]
-#Trabajos a ejecutar en el workflow        
+  push:
+    branches: [main]
+  # pull_request: {}   # (opcional) ejecuta también en PRs
+
 jobs:
-    ejecute-cypress:
-        runs-on: ubuntu-latest
-        steps:
-            #Traer el código a la maquina virtual
-            - name: Bajar el código
-              uses: actions/checkout@v4
+  e2e-cypress:
+    runs-on: ubuntu-latest
 
-            - name: Intalar Node.js
-              uses: actions/setup-node@v4
-              with:
-                node-version: '20'
+    steps:
+      - name: Bajar el código
+        uses: actions/checkout@v4
 
-            - name: Instalar las dependencias 
-              run: npm ci 
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-            - name: Ejecutar Cypress
-              uses: cypress-io/github-action@v6
-              with:
-                 build: npm run build
-                 start: npm run preview
-                 record: true
-              env:
-                CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Instalar dependencias
+        run: npm ci
+
+      # No hace falta un paso separado de build si se lo pasamos a la action
+      - name: Ejecutar Cypress
+        uses: cypress-io/github-action@v6
+        with:
+          install: false                  # evita reinstalar
+          build: npm run build
+          start: npm run preview -- --port 4173 --strictPort
+          wait-on: 'http://localhost:4173'
+          record: true                    # requiere projectId en cypress.config.{js,ts}
+          # browser: chrome               # opcional; por defecto usa Electron
+          # config-file: cypress.config.js # opcional si usás el nombre por defecto
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # útil para status checks, no obligatorio
 
         
