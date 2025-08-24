@@ -3,6 +3,7 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import cypress from 'eslint-plugin-cypress'   
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -25,5 +26,10 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
+  },
+  // ✅ Override solo para los tests de Cypress (JS)
+  {
+    files: ['cypress/**/*.{cy,spec}.{js,jsx}'],
+    ...cypress.configs.recommended,      // usa la config recomendada del plugin
   },
 ])

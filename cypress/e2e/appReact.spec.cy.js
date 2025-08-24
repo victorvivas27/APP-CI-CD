@@ -1,3 +1,5 @@
+
+
 describe('App', () => {
     it('should render the app', () => {
         cy.visit('/')
